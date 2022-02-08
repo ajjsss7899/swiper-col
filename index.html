@@ -62,11 +62,12 @@ ul, li {list-style: none;}
 
     function sliderStart(callbak,swiper){
         //슬라이드 초기화 
+        /*
         if (swiper != undefined){ 
             swiper.destroy();
             swiper = undefined;
         }
-
+        */
         if ($('.slider .list').parent().hasClass('swiper-slide')){
             $('.slider .list').unwrap('swiper-slide');
         }
@@ -114,8 +115,13 @@ ul, li {list-style: none;}
                 winWChk = 'mo';
             }
 
-            sliderAct(); //슬라이드 실행
+            if (this.swiper != undefined){ 
+                this.swiper.destroy();
+                this.swiper = undefined;
+            }
 
+            sliderAct(); //슬라이드 실행
+           
             $(window).on('resize', function (){
                 winW = window.innerWidth;
                 if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
