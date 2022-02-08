@@ -13,7 +13,7 @@
 * {margin: 0;padding: 0;box-sizing: border-box;}
 ul, li {list-style: none;}
 
-.slider {overflow: hidden;max-width: 1180px;margin: 0 auto;}
+.slider {overflow: hidden;max-width: 1180px;margin: 20px auto 0;}
 .slide_list .swiper-slide {display:flex;flex-wrap:wrap;}
 .slide_list .list {width: 33.333%;height: 150px;text-align: center;background: #ddd;}
 </style>
@@ -36,13 +36,29 @@ ul, li {list-style: none;}
         <div class="list">slider12</div>
         <div class="list">slider13</div>
         <div class="list">slider14</div>
-    </ul>
+    </div>
+</div>
+
+<div class="slider">
+    <div class="swiper-wrapper slide_list">
+        <div class="list">slider1</div>
+        <div class="list">slider2</div>
+        <div class="list">slider3</div>
+        <div class="list">slider4</div>
+        <div class="list">slider5</div>
+        <div class="list">slider6</div>
+        <div class="list">slider7</div>
+        <div class="list">slider8</div>
+        <div class="list">slider9</div>
+    </div>
 </div>
 
 <script>
     $(document).ready(function () {
         sliderStart(slider);
     })
+
+    
 
     function sliderStart(callbak,swiper){
         //슬라이드 초기화 
@@ -55,65 +71,84 @@ ul, li {list-style: none;}
             $('.slider .list').unwrap('swiper-slide');
         }
         
-        var col = 0;
-        if (window.innerWidth > 768){ //PC 버전
-            col = 9;
-        }else{ //mobile 버전
-            col = 3;
-        }
-
-        var num = 0;
-        $(".slider .list").each(function(i) {
-            $(this).addClass("list"+(Math.floor((i+col)/col)));
-            num = Math.ceil(i/col);
-        }).promise().done(function(){callbak(num)});
-    }
-
-    function slider(num) {
-        for (var i = 1; i < num+1; i++) {
-           $('.slider .list'+i+'').wrapAll('<div class="swiper-slide"></div>');
-           $('.slider .list'+i+'').removeClass('list'+i+'')
-        } 
-
-        var swiper = undefined;
-        var slideInx = 0; //현재 슬라이드 index
-
-        //디바이스 체크
-        var winWChk = ''; 
-        if (window.innerWidth > 768){ //PC 버전
-            winWChk = 'pc';
-        }else{ //mobile 버전
-            winWChk = 'mo';
-        }
-
-        sliderAct(); //슬라이드 실행
-
-        $(window).on('resize', function () {
-            winW = window.innerWidth;
-            if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
-                sliderStart(slider,swiper);
-                winWChk = 'mo'
+        $(".slider").each(function(index){
+            var col = 0;
+            if (window.innerWidth > 768){ //PC 버전
+                col = 9;
+            }else{ //mobile 버전
+                col = 3;
             }
+            var num = 0;
+            
+            $(this).addClass("slider-" + index);
 
-            if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
-                sliderStart(slider,swiper);
-                winWChk = 'pc'
-            }
+            $(".slider-" + index).find('.list').each(function(i) {
+                $(this).addClass("list"+(Math.floor((i+col)/col)));
+                num = Math.ceil(i/col);
+            }).promise().done(function(){
+                for (var i = 1; i < num+1; i++) {
+                   $(".slider-" + index).find('.list'+i+'').wrapAll('<div class="swiper-slide"></div>');
+                   $(".slider-" + index).find('.list'+i+'').removeClass('list'+i+'')
+                }
+                callbak()
+            });
         })
 
-        function sliderAct(){
-            swiper = new Swiper(".slider", {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                resistanceRatio : 0,
-                on: {
-                    activeIndexChange: function () {
-                        slideInx = this.realIndex; //현재 슬라이드 index 갱신
-                    }
-                },
-            });
-        }
+       
     }
+
+    function slider(){
+        var winWChk = ''; //디바이스 체크 변수
+        $(".slider").each(function(index){
+            var $this = $(this);
+            //슬라이드 인덱스 클래스 추가
+
+            var winW = window.innerWidth; //화면 가로사이즈
+            var swiper = undefined;
+            var slideInx = 0; //현재 슬라이드 index
+            
+            //디바이스 체크
+            if (window.innerWidth > 768){ //PC 버전
+                winWChk = 'pc';
+            }else{ //mobile 버전
+                winWChk = 'mo';
+            }
+
+            sliderAct(); //슬라이드 실행
+
+            $(window).on('resize', function (){
+                winW = window.innerWidth;
+                if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
+                    if (index == $(".slider").length-1){
+                        sliderStart(slider,swiper);
+                        winWChk = 'mo';
+                    }
+                }
+
+                if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
+                    if (index == $(".slider").length-1){
+                        sliderStart(slider,swiper);
+                        winWChk = 'pc';
+                    }
+                }
+            })
+            
+            function sliderAct(){
+                swiper = new Swiper('.slider-' + index , {
+                    slidesPerView: 1,
+                    initialSlide :slideInx,
+                    on: {
+                        activeIndexChange: function () {
+                            slideInx = this.realIndex; //현재 슬라이드 index 갱신
+                        }
+                    },
+                });
+            }
+        });
+    }
+
+
+
 </script>
 </body>
 </html>
