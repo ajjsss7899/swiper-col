@@ -71,31 +71,28 @@ ul, li {list-style: none;}
         var realInx = []
         var realInx2 = []
 
-        slideDevice();
-        sliderStart();
+       sliderStart();
 
-        function slideDevice(){
-           var winWChk = ''; //디바이스 체크 변수
-            //디바이스 체크
-            if (window.innerWidth > 768){ //PC 버전
-                winWChk = 'pc';
-            }else{ //mobile 버전
+       var winWChk = ''; //디바이스 체크 변수
+        //디바이스 체크
+        if (window.innerWidth > 768){ //PC 버전
+            winWChk = 'pc';
+        }else{ //mobile 버전
+            winWChk = 'mo';
+        }
+
+        $(window).on('resize', function (){
+            winW = window.innerWidth;
+            if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
+                sliderStart()
                 winWChk = 'mo';
             }
 
-            $(window).on('resize', function (){
-                winW = window.innerWidth;
-                if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
-                    sliderStart()
-                    winWChk = 'mo';
-                }
-
-                if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
-                    sliderStart()
-                    winWChk = 'pc';
-                }
-            }) 
-        }
+            if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
+                sliderStart()
+                winWChk = 'pc';
+            }
+        }) 
 
         function sliderStart(){
             if ($('.slider .list').parent().hasClass('swiper-slide')){
@@ -131,7 +128,6 @@ ul, li {list-style: none;}
             $(".slider").each(function(index){
                 realInx.push(0);
                 realInx2.push(0);
-
                 slideArr.push(undefined);
 
                 if(slideArr[index] != undefined) {
@@ -159,8 +155,6 @@ ul, li {list-style: none;}
                 slideArr[index].slideTo(Math.floor(realInx[index]/col));
                 realInx[index] = realInx2[index];
             }); 
-
-            
         }
     }
 
