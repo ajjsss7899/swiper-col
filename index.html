@@ -50,66 +50,32 @@ ul, li {list-style: none;}
         <div class="list">slider7</div>
         <div class="list">slider8</div>
         <div class="list">slider9</div>
+        <div class="list">slider10</div>
+        <div class="list">slider11</div>
+        <div class="list">slider12</div>
+        <div class="list">slider13</div>
+        <div class="list">slider14</div>
     </div>
 </div>
 
+
 <script>
     $(document).ready(function () {
-        sliderStart(slider);
+        slideAct();
     })
 
-    
+    function slideAct(){
+        var col = 0;
 
-    function sliderStart(callbak){
-        //슬라이드 초기화 
-        /*
-        if (swiper != undefined){ 
-            swiper.destroy();
-            swiper = undefined;
-        }
-        */
-        if ($('.slider .list').parent().hasClass('swiper-slide')){
-            $('.slider .list').unwrap('swiper-slide');
-        }
-        
-        $(".slider").each(function(index){
-            var col = 0;
-            if (window.innerWidth > 768){ //PC 버전
-                col = 9;
-            }else{ //mobile 버전
-                col = 3;
-            }
-            var num = 0;
-            
-            $(this).addClass("slider-" + index);
+        var slideArr = []
+        var realInx = []
+        var realInx2 = []
 
-            $(".slider-" + index).find('.list').each(function(i) {
-                $(this).addClass("list"+(Math.floor((i+col)/col)));
-                num = Math.ceil(i/col);
-            }).promise().done(function(){
-                for (var i = 1; i < num+1; i++) {
-                   $(".slider-" + index).find('.list'+i+'').wrapAll('<div class="swiper-slide"></div>');
-                   $(".slider-" + index).find('.list'+i+'').removeClass('list'+i+'')
-                }
-                callbak()
-            });
-        })
+        slideDevice();
+        sliderStart();
 
-       
-    }
-
-    function slider(){
-
-        var winWChk = ''; //디바이스 체크 변수
-        $(".slider").each(function(index){
-
-            var $this = $(this);
-            //슬라이드 인덱스 클래스 추가
-
-            var winW = window.innerWidth; //화면 가로사이즈
-            
-            var slideInx = 0; //현재 슬라이드 index
-            
+        function slideDevice(){
+           var winWChk = ''; //디바이스 체크 변수
             //디바이스 체크
             if (window.innerWidth > 768){ //PC 버전
                 winWChk = 'pc';
@@ -117,43 +83,86 @@ ul, li {list-style: none;}
                 winWChk = 'mo';
             }
 
-            
-            sliderAct(); //슬라이드 실행
-           
             $(window).on('resize', function (){
                 winW = window.innerWidth;
                 if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
-                    if (index == $(".slider").length-1){
-                        sliderStart(slider);
-                        winWChk = 'mo';
-                    }
+                    sliderStart()
+                    winWChk = 'mo';
                 }
 
                 if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
-                    if (index == $(".slider").length-1){
-                        sliderStart(slider);
-                        winWChk = 'pc';
-                    }
+                    sliderStart()
+                    winWChk = 'pc';
                 }
-            })
+            }) 
+        }
+
+        function sliderStart(){
+            if ($('.slider .list').parent().hasClass('swiper-slide')){
+                $('.slider .list').unwrap('swiper-slide');
+            }
             
-            function sliderAct(){
-                var swiper = new Swiper('.slider-' + index , {
+            $(".slider").each(function(index){
+                if (window.innerWidth > 768){ //PC 버전
+                    col = 6;
+                }else{ //mobile 버전
+                    col = 3;
+                }
+                var num = 0;
+
+                $(this).addClass("slider-" + index);
+                $(".slider-" + index).find('.list').each(function(i) {
+                    $(this).addClass("list"+(Math.floor((i+col)/col)));
+                    num = Math.floor((i+col)/col)
+                    
+                }).promise().done(function(){
+                   for (var i = 1; i < num+1; i++) {
+                       $(".slider-" + index).find('.list'+i+'').wrapAll('<div class="swiper-slide"></div>');
+                       $(".slider-" + index).find('.list'+i+'').removeClass('list'+i+'')
+                    }
+                });
+            }).promise().done(function(){
+                slider()
+                
+            });
+        }
+
+        function slider(){
+            $(".slider").each(function(index){
+                realInx.push(0);
+                realInx2.push(0);
+
+                slideArr.push(undefined);
+
+                if(slideArr[index] != undefined) {
+                    slideArr[index].destroy();
+                    slideArr[index] == undefined;
+                }
+                slideArr[index] = new Swiper('.slider-' + index , {
                     slidesPerView: 1,
-                    initialSlide :slideInx,
+                    initialSlide :0,
+                    resistanceRatio : 0,
                     on: {
-                        activeIndexChange: function () {
-                            slideInx = this.realIndex; //현재 슬라이드 index 갱신
+                        slideChange: function () {
+                            realInx[index] = this.realIndex*col
+                        
                         }
                     },
+
+                    
                 });
-            }
 
-           
-        });
+                if(slideArr[index] == undefined) {
+                    slideArr.push(swiper)
+                }
+                realInx2[index] = realInx[index];
+                slideArr[index].slideTo(Math.floor(realInx[index]/col));
+                realInx[index] = realInx2[index];
+            }); 
+
+            
+        }
     }
-
-
 
 </script>
 </body>
