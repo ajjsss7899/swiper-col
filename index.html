@@ -60,7 +60,7 @@ ul, li {list-style: none;}
 
     
 
-    function sliderStart(callbak,swiper){
+    function sliderStart(callbak){
         //슬라이드 초기화 
         /*
         if (swiper != undefined){ 
@@ -99,13 +99,15 @@ ul, li {list-style: none;}
     }
 
     function slider(){
+
         var winWChk = ''; //디바이스 체크 변수
         $(".slider").each(function(index){
+
             var $this = $(this);
             //슬라이드 인덱스 클래스 추가
 
             var winW = window.innerWidth; //화면 가로사이즈
-            var swiper = undefined;
+            
             var slideInx = 0; //현재 슬라이드 index
             
             //디바이스 체크
@@ -115,32 +117,28 @@ ul, li {list-style: none;}
                 winWChk = 'mo';
             }
 
-            if (this.swiper != undefined){ 
-                this.swiper.destroy();
-                this.swiper = undefined;
-            }
-
+            
             sliderAct(); //슬라이드 실행
            
             $(window).on('resize', function (){
                 winW = window.innerWidth;
                 if(winWChk != 'mo' && winW < 768){ //모바일 버전으로 전환할 때
                     if (index == $(".slider").length-1){
-                        sliderStart(slider,swiper);
+                        sliderStart(slider);
                         winWChk = 'mo';
                     }
                 }
 
                 if(winWChk != 'pc' && winW > 768){ //PC 버전으로 전환할 때
                     if (index == $(".slider").length-1){
-                        sliderStart(slider,swiper);
+                        sliderStart(slider);
                         winWChk = 'pc';
                     }
                 }
             })
             
             function sliderAct(){
-                swiper = new Swiper('.slider-' + index , {
+                var swiper = new Swiper('.slider-' + index , {
                     slidesPerView: 1,
                     initialSlide :slideInx,
                     on: {
@@ -150,6 +148,8 @@ ul, li {list-style: none;}
                     },
                 });
             }
+
+           
         });
     }
 
