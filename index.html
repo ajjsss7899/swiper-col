@@ -130,7 +130,7 @@ function slideAct(){
                 prevEl: $('.slider').find('.swiper-prev'),
             },
             on: {
-                slideChange: function () {
+                activeIndexChange: function () {
                     realInx = this.realIndex*view
                 }
             },
